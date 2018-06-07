@@ -31,6 +31,7 @@ class CampaignNew extends Component {
     }
 
     this.setState({loading: false});
+
   };
 
   render() {
@@ -50,6 +51,7 @@ class CampaignNew extends Component {
               />
           </Form.Field>
           <Message error header="Oops!" content={this.state.errorMessage} />
+
           <Button primary loading={this.state.loading} >Create!</Button>
         </Form>
       </Layout>
