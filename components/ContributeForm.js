@@ -4,15 +4,20 @@ import Campaign from '../etherium/campaign';
 import web3 from '../etherium/web3';
 import { Router } from '../routes';
 
+
 class ContributeForm extends Component {
   state = {
-    value: ''
+    value: '',
+    errorMessage: '',
+    loading: false
   }
 
   onSubmit = async (event) => {
     event.preventDefault();
 
     const campaign = Campaign(this.props.address);
+
+    this.setState({ loading: true,  errorMessage: '' });
 
     try {
       const accounts = await web3.eth.getAccounts();
@@ -23,13 +28,15 @@ class ContributeForm extends Component {
 
       Router.replaceRoute(`/campaigns/${this.props.address}`)
     } catch(err) {
-
+      this.setState({errorMessage: err.message});
     }
-  }
+
+    this.setState({ loading: false, value: '' });
+  };
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
         <Form.Field>
           <label>Amount of Contribute</label>
           <Input 
@@ -38,8 +45,9 @@ class ContributeForm extends Component {
             label="ether" 
             labelPosition="right" />
         </Form.Field>
-       
-        <Button primary>Contribute {this.state.value} ether!</Button>
+
+        <Message error header="Oops!" content={this.state.errorMessage} />
+        <Button primary loading={this.state.loading}>Contribute {this.state.value} ether!</Button>
       </Form>
       
     )
